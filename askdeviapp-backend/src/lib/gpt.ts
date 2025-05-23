@@ -2,7 +2,7 @@ import { AzureOpenAI } from "openai";
 import { BirthDetails, GPTMessage, MatchDetails } from "@/types";
 import { getCurrentPlanetaryPositions } from "./astrology/currentTransits";
 import { getCurrentDasha } from "./astrology/currentDasha";
-import { systemPrompt } from "./prompts";
+import { systemPrompt, humanizePrompt, splitMessagePrompt, splitThreeWayPrompt, prompt3 } from "./prompts";
 import { getDailyNakshatraReport } from './astrology/dailyNakshatraReport';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -51,6 +51,27 @@ type AvailableFunctions = {
     getMatchCharacteristics: (matchDetails: MatchDetails) => Promise<any>;
 };
 
+const humanizeResponse = async (response: string, client: AzureOpenAI) => {
+
+    const messages = [
+        {
+            role: "system",
+            content: humanizePrompt
+        },
+        {
+            role: "user",
+            content: response
+        }
+    ]
+
+    const completion = await client.chat.completions.create({
+        messages: messages as any[],
+        model: "gpt-4o",    
+    });
+
+    return completion.choices[0].message.content || '';
+}
+
 // Add the function implementation map
 const availableFunctions: AvailableFunctions = {
     getDailyNakshatraReport: async (birthDetails: BirthDetails) => {
@@ -74,10 +95,95 @@ function cleanResponse(response: string): string {
     return response.replace(/\*/g, '');
 }
 
+const splitResponseTwoWay = async (response: string, client: AzureOpenAI) => {
+    const messages = [
+        {
+            role: "system",
+            content: splitMessagePrompt
+        },
+        {
+            role: "user",
+            content: response
+        }
+    ];
+
+    const completion = await client.chat.completions.create({
+        messages: messages as any[],
+        model: "gpt-4o",
+    });
+
+    const splitText = completion.choices[0].message.content?.split('|||') || [response];
+    return splitText.length === 2 ? splitText : [response, ''];
+};
+
+const splitResponseThreeWay = async (response: string, client: AzureOpenAI) => {
+    const messages = [
+        {
+            role: "system",
+            content: splitThreeWayPrompt
+        },
+        {
+            role: "user",
+            content: response
+        }
+    ];
+
+    const completion = await client.chat.completions.create({
+        messages: messages as any[],
+        model: "gpt-4o",
+    });
+
+    const splitText = completion.choices[0].message.content?.split('|||') || [response];
+    return splitText.length === 3 ? splitText : [response, '', ''];
+};
+
+// Update the response handling in getAstrologicalReading
+const handleResponseSplitting = async (response: string, client: AzureOpenAI) => {
+    const random = Math.random();
+    
+    // Only attempt splits if response is long enough
+    if (response.length <= 100) {
+        return {
+            splitResponse: false,
+            parts: [response]
+        };
+    }
+
+    // 15% chance for three-way split
+    if (random < 0.15) {
+        console.log('Attempting three-way split');
+        const [first, second, third] = await splitResponseThreeWay(response, client);
+        if (second && third) {
+            return {
+                splitResponse: true,
+                parts: [first.trim(), second.trim(), third.trim()]
+            };
+        }
+    }
+    // 25% chance for two-way split
+    else if (random < 0.40) {
+        console.log('Attempting two-way split');
+        const [first, second] = await splitResponseTwoWay(response, client);
+        if (second) {
+            return {
+                splitResponse: true,
+                parts: [first.trim(), second.trim()]
+            };
+        }
+    }
+
+    // Default to single response
+    return {
+        splitResponse: false,
+        parts: [response]
+    };
+};
+
+// Modify the getAstrologicalReading function to potentially split responses
 export async function getAstrologicalReading(
-  prompt: string, 
-  previousMessages: GPTMessage[] = [],
-  userId: string
+    prompt: string,
+    previousMessages: GPTMessage[] = [],
+    userId: string
 ) {
     try {
         // If this is the first message or we don't have cached data, fetch the data
@@ -140,7 +246,7 @@ export async function getAstrologicalReading(
             { 
                 role: "system",
                 content: `
-                    ${systemPrompt}
+                    ${prompt3}
                     For reference, the current date and time is: ${new Date().toISOString()}
                     Always respond in the following language: ${cachedUserData.preferredLanguage}
                 `
@@ -286,10 +392,13 @@ export async function getAstrologicalReading(
                 model: "gpt-4o",
             });
 
-            return cleanResponse(secondResponse.choices[0].message.content || '');
+            const finalResponse = cleanResponse(secondResponse.choices[0].message.content || '');
+
+            return await handleResponseSplitting(finalResponse, client);
         }
 
-        return cleanResponse(responseMessage.content || '');
+        const finalResponse = cleanResponse(responseMessage.content || '');
+        return await handleResponseSplitting(finalResponse, client);
 
     } catch (error: any) {
         // const { user } = useAuth();

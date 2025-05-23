@@ -1,25 +1,80 @@
 import { NextResponse } from 'next/server';
-import { doc, setDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getFirebaseAdmin } from '@/lib/firebase-admin';
+import { getBirthChart } from '@/lib/astrology/birthchart';
 
 export async function POST(request: Request) {
-  const userData = await request.json();
-
-  if (!userData.userId || !userData.phoneNumber) {
-    return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
-  }
-
   try {
-    await setDoc(doc(db, 'users', userData.userId), {
-      ...userData,
-      tokens: 3,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+    const body = await request.json();
+    const {
+      userId,
+      phoneNumber,
+      firstName,
+      lastName,
+      birthDate,
+      birthTime,
+      birthPlace,
+      gender,
+      preferredLanguage,
+      relationshipStatus,
+      occupation
+    } = body;
+
+    // Basic validation
+    if (
+      !userId ||
+      !phoneNumber ||
+      !firstName ||
+      !lastName ||
+      !birthDate ||
+      !birthTime ||
+      !birthPlace?.latitude ||
+      !birthPlace?.longitude
+    ) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
+    // Calculate birth chart
+    const birthChartDetails = await getBirthChart({
+      date: birthDate,
+      time: birthTime,
+      location: {
+        latitude: birthPlace.latitude,
+        longitude: birthPlace.longitude
+      }
     });
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error('Error registering user:', error);
-    return NextResponse.json({ success: false }, { status: 500 });
+    // Initialize Firebase Admin
+    const { db } = getFirebaseAdmin();
+    const { FieldValue } = await import('firebase-admin/firestore');
+
+    // Prepare user data
+    const userData = {
+      userId,
+      phoneNumber,
+      firstName,
+      lastName,
+      birthDate,
+      birthTime,
+      birthPlace,
+      gender: gender || null,
+      preferredLanguage: preferredLanguage || null,
+      relationshipStatus: relationshipStatus || null,
+      occupation: occupation || null,
+      birthChart: birthChartDetails,
+      tokens: 3,
+      createdAt: FieldValue.serverTimestamp(),
+      updatedAt: FieldValue.serverTimestamp()
+    };
+
+    // Write to Firestore
+    await db.doc(`users/${userId}`).set(userData);
+
+    return NextResponse.json({
+      message: 'User registered successfully',
+      userId
+    });
+  } catch (error: any) {
+    console.error('Register API error:', error);
+    return NextResponse.json({ error: error.message || 'Failed to register user' }, { status: 500 });
   }
 }
