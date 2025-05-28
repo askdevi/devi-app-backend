@@ -48,11 +48,21 @@ export async function GET(request: Request) {
       userRecord = await auth.getUserByPhoneNumber(phoneNumberWithPlus);
     } catch (err: any) {
       // User not found, create a new one
-      exists = false;
+      // exists = false;
       userRecord = await auth.createUser({
         phoneNumber: phoneNumberWithPlus,
         displayName: `User ${phoneNumber}`
       });
+    }
+
+    //if userId is not in users document exists = false
+    const { db } = getFirebaseAdmin();
+    const usersRef = db.collection('users');
+    const userSnapshot = await usersRef
+      .where('userId', '==', userRecord.uid)
+      .get();
+    if (userSnapshot.empty) {
+      exists = false;
     }
 
     // Create custom token for client-side Firebase authentication
@@ -61,7 +71,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       message: 'OTP verified successfully',
       userId: userRecord.uid,
-      customToken,
+      // customToken,
       exists
     });
   } catch (error: any) {

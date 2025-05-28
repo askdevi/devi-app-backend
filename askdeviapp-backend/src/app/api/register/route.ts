@@ -70,8 +70,7 @@ export async function POST(request: Request) {
     await db.doc(`users/${userId}`).set(userData);
 
     return NextResponse.json({
-      message: 'User registered successfully',
-      userId
+      message: 'User registered successfully'
     });
   } catch (error: any) {
     console.error('Register API error:', error);
