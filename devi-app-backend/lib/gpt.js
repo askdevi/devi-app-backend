@@ -4,8 +4,7 @@ const { getCurrentDasha } = require("./astrology/currentDasha");
 const { systemPrompt, humanizePrompt, splitMessagePrompt, splitThreeWayPrompt, prompt3 } = require("./prompts");
 const { getDailyNakshatraReport } = require('./astrology/dailyNakshatraReport');
 const { getMatchCharacteristics } = require('./astrology/matchCharacteristics');
-const { db } = require('./lib/firebase');
-const { doc, getDoc } = require('firebase/firestore');
+const { db } = require('./firebase-admin');
 
 // Global cache variables
 let cachedBirthChart = null;
@@ -144,16 +143,18 @@ async function getAstrologicalReading(
     try {
         // If this is the first message or we don't have cached data, fetch the data
         if (previousMessages.length === 0 || !cachedBirthChart || !cachedUserData || cachedUserId !== userId) {
-            
+
             try {
                 // Fetch user data from Firestore
-                const userDoc = await getDoc(doc(db, 'users', userId));
-                if (!userDoc.exists()) {
+                const userDoc = await db.collection('users').doc(userId).get();
+
+                if (!userDoc.exists) {
                     console.error('User document not found for userId:', userId);
                     throw new Error('User data not found');
                 }
 
                 const userData = userDoc.data();
+
                 const birthDetails = {
                     date: userData.birthDate,
                     time: userData.birthTime,
@@ -162,7 +163,7 @@ async function getAstrologicalReading(
 
                 cachedUserData = userData;
                 cachedUserId = userId;
-                
+
                 // Use stored birth chart and fetch only current data
                 const [currentPositions, currentDasha] = await Promise.all([
                     getCurrentPlanetaryPositions(new Date()),
@@ -183,9 +184,9 @@ async function getAstrologicalReading(
                     // currentAuthUid: user?.uid || 'no auth user',
                     timestamp: new Date().toISOString()
                 });
-                
+
                 if (firestoreError.code === 'permission-denied') {
-                        throw new Error(`Unable to access user data due to permissions. Requested User ID: ${userId}`);
+                    throw new Error(`Unable to access user data due to permissions. Requested User ID: ${userId}`);
                 }
                 throw firestoreError;
             }
@@ -199,7 +200,7 @@ async function getAstrologicalReading(
         });
 
         const messages = [
-            { 
+            {
                 role: "system",
                 content: `
                     ${prompt3}
@@ -207,7 +208,7 @@ async function getAstrologicalReading(
                     Always respond in the following language: ${cachedUserData.preferredLanguage}
                 `
             }
-        ]; 
+        ];
 
         let responseMessage;
         const maxRetries = 3; // Add safety limit to prevent infinite loops
@@ -274,7 +275,7 @@ async function getAstrologicalReading(
             });
             const toolCall = responseMessage.tool_calls[0];
             const functionName = toolCall.function.name;
-            
+
             let functionResult;
             if (functionName === 'getDailyNakshatraReport') {
                 console.log('Calling getDailyNakshatraReport');
@@ -286,7 +287,7 @@ async function getAstrologicalReading(
                 functionResult = await availableFunctions[functionName](birthDetails);
                 console.log('getDailyNakshatraReport result:', functionResult)
             }
-            
+
             // Convert OpenAI message to GPTMessage format
             const assistantMessage = {
                 role: 'assistant',
@@ -322,7 +323,7 @@ async function getAstrologicalReading(
 
     } catch (error) {
         // const { user } = useAuth();
-        
+
         console.error('GPT Service Error:', {
             error: error.message,
             code: error.code,

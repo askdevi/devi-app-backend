@@ -1,5 +1,4 @@
-const { doc, getDoc, setDoc } = require('firebase/firestore');
-const { db } = require('@/lib/firebase-admin'); // adjust relative path as needed
+const { db } = require('./firebase-admin');
 
 // In-memory cache to avoid repeated Firebase calls
 const dailyBlessingsCache = new Map();
@@ -158,10 +157,11 @@ async function getDailyBlessings(userId) {
             return dailyBlessingsCache.get(cacheKey).data;
         }
 
-        const blessingsRef = doc(db, 'dailyBlessings', cacheKey);
-        const blessingsDoc = await getDoc(blessingsRef);
+        // Use Admin SDK Firestore methods:
+        const blessingsRef = db.collection('dailyBlessings').doc(cacheKey);
+        const blessingsDoc = await blessingsRef.get();
 
-        if (blessingsDoc.exists()) {
+        if (blessingsDoc.exists) {
             const cachedBlessings = blessingsDoc.data();
             console.log('Using Firebase cached daily blessings');
 
@@ -175,14 +175,16 @@ async function getDailyBlessings(userId) {
 
         console.log('Generating new daily blessings');
 
-        const userDoc = await getDoc(doc(db, 'users', userId));
-        if (!userDoc.exists()) {
+        const userDocRef = db.collection('users').doc(userId);
+        const userDoc = await userDocRef.get();
+
+        if (!userDoc.exists) {
             throw new Error('User data not found');
         }
 
         const userData = userDoc.data();
 
-        // Random lucky number and color (you can replace with numerology logic if needed)
+        // Random lucky number and color
         const luckyNumbers = ["1", "2", "3", "4", "5", "6", "7", "8", "9"];
         const luckyNumber = luckyNumbers[Math.floor(Math.random() * luckyNumbers.length)];
         const luckyColor = LUCKY_COLORS[Math.floor(Math.random() * LUCKY_COLORS.length)];
@@ -198,7 +200,7 @@ async function getDailyBlessings(userId) {
             date: todayIST
         };
 
-        await setDoc(blessingsRef, dailyBlessings);
+        await blessingsRef.set(dailyBlessings);
 
         dailyBlessingsCache.set(cacheKey, {
             data: dailyBlessings,

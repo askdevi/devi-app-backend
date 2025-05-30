@@ -1,12 +1,18 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+const requestLogger = require('./middleware/requestLogger');
+const errorHandler = require('./middleware/errorHandler');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const app = express();
 const PORT = 3001;
 
 app.use(cors());
 app.use(express.json());
+
+app.use(requestLogger);
 
 app.use('/api/send-otp', require('./routes/signup/send-otp'));
 app.use('/api/verify-otp', require('./routes/signup/verify-otp'));
@@ -20,6 +26,8 @@ app.use('/api/daily-blessings', require('./routes/user/daily-blessings'));
 app.use('/api/devi', require('./routes/devi/devi'));
 app.use('/api/delete-chat', require('./routes/devi/delete-chat'));
 app.use('/api/chat-history', require('./routes/devi/chat-history'));
+
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
