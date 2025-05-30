@@ -3,7 +3,7 @@ const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 
 const router = express.Router();
 
-router.get('/get-profile', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const userId = req.query.userId;
 

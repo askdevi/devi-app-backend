@@ -2,7 +2,7 @@ const express = require('express');
 const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 const router = express.Router();
 
-router.get('/chat-history', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const userId = req.query.userId;
         if (!userId) {

@@ -4,7 +4,7 @@ const { getBirthChart } = require('../../lib/astrology/birthchart');
 
 const router = express.Router();
 
-router.post('/register', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const {
             userId,

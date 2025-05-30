@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 
-router.delete('/delete-user', async (req, res) => {
+router.delete('/', async (req, res) => {
     try {
         const userId = req.query.userId;
 

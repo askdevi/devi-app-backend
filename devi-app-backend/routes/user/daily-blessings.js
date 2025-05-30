@@ -3,7 +3,7 @@ const router = express.Router();
 const { getDailyBlessings } = require('../../lib/getDailyBlessings');
 const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 
-router.get('/daily-blessings', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const userId = req.query.userId;
 

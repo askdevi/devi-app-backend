@@ -2,7 +2,7 @@ const express = require('express');
 const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 const router = express.Router();
 
-router.delete('/delete-chat', async (req, res) => {
+router.delete('/', async (req, res) => {
     try {
         const { userId, chatStartTime } = req.query;
 

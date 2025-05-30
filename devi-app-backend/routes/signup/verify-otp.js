@@ -5,7 +5,7 @@ const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 
 const MSG91_AUTH_KEY = process.env.MSG91_AUTH_KEY;
 
-router.get('/verify-otp', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const phoneNumber = req.query.phoneNumber;
         const otp = req.query.otp;

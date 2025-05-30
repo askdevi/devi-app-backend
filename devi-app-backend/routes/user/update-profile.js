@@ -3,7 +3,7 @@ const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 
 const router = express.Router();
 
-router.post('/update-profile', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const {
             userId,

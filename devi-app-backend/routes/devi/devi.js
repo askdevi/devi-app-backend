@@ -4,7 +4,7 @@ const { getFirebaseAdmin } = require('../../lib/firebase-admin');
 const { FieldValue } = require('firebase-admin/firestore');
 const router = express.Router();
 
-router.post('/devi', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { prompt, messages, userId, chatStartTime } = req.body;
 

@@ -4,7 +4,7 @@ const router = express.Router();
 
 const MSG91_AUTH_KEY = process.env.MSG91_AUTH_KEY;
 
-router.post('/send-otp', async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         const { phoneNumber } = req.body;
 
