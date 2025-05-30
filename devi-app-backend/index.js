@@ -27,6 +27,9 @@ app.use('/api/devi', require('./routes/devi/devi'));
 app.use('/api/delete-chat', require('./routes/devi/delete-chat'));
 app.use('/api/chat-history', require('./routes/devi/chat-history'));
 
+app.use('/api/create-order', require('./routes/payment/create-order'));
+app.use('/api/verify-payment', require('./routes/payment/verify-payment'));
+
 app.use(errorHandler);
 
 app.listen(PORT, () => {

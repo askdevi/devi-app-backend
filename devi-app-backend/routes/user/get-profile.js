@@ -37,7 +37,6 @@ router.get('/', async (req, res) => {
             relationshipStatus: userData.relationshipStatus,
             occupation: userData.occupation,
             birthPlace: userData.birthPlace,
-            tokens: userData.tokens || 0,
             timeEnd: userData.timeEnd ? userData.timeEnd.toDate() : new Date()
         };
 

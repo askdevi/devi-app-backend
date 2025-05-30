@@ -64,7 +64,6 @@ router.post('/', async (req, res) => {
             relationshipStatus: relationshipStatus || null,
             occupation: occupation || null,
             birthChart: birthChartDetails,
-            tokens: 3,
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp()
         };
