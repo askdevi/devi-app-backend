@@ -294,8 +294,7 @@ export async function getDailyBlessings(userId: string): Promise<{
             auspiciousTime,
             luckyNumber,
             luckyColor,
-            date: todayIST,
-            userId: userId
+            date: todayIST
         };
 
         // Store the results in Firebase

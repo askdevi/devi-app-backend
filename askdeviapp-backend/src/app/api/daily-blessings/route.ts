@@ -40,6 +40,8 @@ export async function GET(request: NextRequest) {
       });
     }
 
+    // "userId" is in the blessingsData, but we don't need to send it to the client
+
     // Return the data
     return NextResponse.json(blessingsData);
   } catch (error: any) {

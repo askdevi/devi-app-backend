@@ -28,7 +28,8 @@ export async function POST(request: Request) {
       !birthDate ||
       !birthTime ||
       !birthPlace?.latitude ||
-      !birthPlace?.longitude
+      !birthPlace?.longitude ||
+      !birthPlace?.name
     ) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }

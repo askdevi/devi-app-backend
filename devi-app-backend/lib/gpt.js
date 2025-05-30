@@ -1,27 +1,25 @@
-import { AzureOpenAI } from "openai";
-import { BirthDetails, GPTMessage, MatchDetails } from "@/types";
-import { getCurrentPlanetaryPositions } from "./astrology/currentTransits";
-import { getCurrentDasha } from "./astrology/currentDasha";
-import { systemPrompt, humanizePrompt, splitMessagePrompt, splitThreeWayPrompt, prompt3 } from "./prompts";
-import { getDailyNakshatraReport } from './astrology/dailyNakshatraReport';
-import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
-// import { useAuth } from '@/context/AuthContext';
-import { getMatchCharacteristics } from './astrology/matchCharacteristics';
+const { AzureOpenAI } = require("openai");
+const { getCurrentPlanetaryPositions } = require("./astrology/currentTransits");
+const { getCurrentDasha } = require("./astrology/currentDasha");
+const { systemPrompt, humanizePrompt, splitMessagePrompt, splitThreeWayPrompt, prompt3 } = require("./prompts");
+const { getDailyNakshatraReport } = require('./astrology/dailyNakshatraReport');
+const { getMatchCharacteristics } = require('./astrology/matchCharacteristics');
+const { db } = require('./lib/firebase');
+const { doc, getDoc } = require('firebase/firestore');
 
-// Add these global variables at the top of the file
-let cachedBirthChart: any = null;
-let cachedCurrentPositions: any = null;
-let cachedCurrentDasha: any = null;
-let cachedUserData: any = null;
-let cachedUserId: string | null = null;
-let cachedDailyNakshatra: any = null;
-let cachedMatchCharacteristics: any = null;
+// Global cache variables
+let cachedBirthChart = null;
+let cachedCurrentPositions = null;
+let cachedCurrentDasha = null;
+let cachedUserData = null;
+let cachedUserId = null;
+let cachedDailyNakshatra = null;
+let cachedMatchCharacteristics = null;
 
-// Update the tool definition
+// Tool definition
 const tools = [
     {
-        type: "function" as const,
+        type: "function",
         function: {
             name: 'getDailyNakshatraReport',
             description: 'Get the daily nakshatra prediction for the user if they ask you to make predictions for the day',
@@ -31,45 +29,34 @@ const tools = [
                 required: []
             }
         }
-    },
+    }
 ];
 
-type AvailableFunctions = {
-    getDailyNakshatraReport: (birthDetails: BirthDetails) => Promise<any>;
-    getMatchCharacteristics: (matchDetails: MatchDetails) => Promise<any>;
-};
-
-const humanizeResponse = async (response: string, client: AzureOpenAI) => {
-
+// Helper to humanize GPT response
+const humanizeResponse = async (response, client) => {
     const messages = [
-        {
-            role: "system",
-            content: humanizePrompt
-        },
-        {
-            role: "user",
-            content: response
-        }
-    ]
+        { role: "system", content: humanizePrompt },
+        { role: "user", content: response }
+    ];
 
     const completion = await client.chat.completions.create({
-        messages: messages as any[],
-        model: "gpt-4o",    
+        messages: messages,
+        model: "gpt-4o"
     });
 
     return completion.choices[0].message.content || '';
-}
+};
 
-// Add the function implementation map
-const availableFunctions: AvailableFunctions = {
-    getDailyNakshatraReport: async (birthDetails: BirthDetails) => {
+// Function map
+const availableFunctions = {
+    getDailyNakshatraReport: async (birthDetails) => {
         if (!cachedDailyNakshatra) {
             const result = await getDailyNakshatraReport(birthDetails);
             cachedDailyNakshatra = result;
         }
         return cachedDailyNakshatra;
     },
-    getMatchCharacteristics: async (matchDetails: MatchDetails) => {
+    getMatchCharacteristics: async (matchDetails) => {
         if (!cachedMatchCharacteristics) {
             const result = await getMatchCharacteristics(matchDetails);
             cachedMatchCharacteristics = result;
@@ -78,58 +65,44 @@ const availableFunctions: AvailableFunctions = {
     }
 };
 
-// Add this helper function at the top of the file
-function cleanResponse(response: string): string {
+// Helper to clean GPT responses
+function cleanResponse(response) {
     return response.replace(/\*/g, '');
 }
 
-const splitResponseTwoWay = async (response: string, client: AzureOpenAI) => {
+const splitResponseTwoWay = async (response, client) => {
     const messages = [
-        {
-            role: "system",
-            content: splitMessagePrompt
-        },
-        {
-            role: "user",
-            content: response
-        }
+        { role: "system", content: splitMessagePrompt },
+        { role: "user", content: response }
     ];
 
     const completion = await client.chat.completions.create({
-        messages: messages as any[],
-        model: "gpt-4o",
+        messages: messages,
+        model: "gpt-4o"
     });
 
     const splitText = completion.choices[0].message.content?.split('|||') || [response];
     return splitText.length === 2 ? splitText : [response, ''];
 };
 
-const splitResponseThreeWay = async (response: string, client: AzureOpenAI) => {
+const splitResponseThreeWay = async (response, client) => {
     const messages = [
-        {
-            role: "system",
-            content: splitThreeWayPrompt
-        },
-        {
-            role: "user",
-            content: response
-        }
+        { role: "system", content: splitThreeWayPrompt },
+        { role: "user", content: response }
     ];
 
     const completion = await client.chat.completions.create({
-        messages: messages as any[],
-        model: "gpt-4o",
+        messages: messages,
+        model: "gpt-4o"
     });
 
     const splitText = completion.choices[0].message.content?.split('|||') || [response];
     return splitText.length === 3 ? splitText : [response, '', ''];
 };
 
-// Update the response handling in getAstrologicalReading
-const handleResponseSplitting = async (response: string, client: AzureOpenAI) => {
+const handleResponseSplitting = async (response, client) => {
     const random = Math.random();
-    
-    // Only attempt splits if response is long enough
+
     if (response.length <= 100) {
         return {
             splitResponse: false,
@@ -137,7 +110,6 @@ const handleResponseSplitting = async (response: string, client: AzureOpenAI) =>
         };
     }
 
-    // 15% chance for three-way split
     if (random < 0.15) {
         console.log('Attempting three-way split');
         const [first, second, third] = await splitResponseThreeWay(response, client);
@@ -147,9 +119,7 @@ const handleResponseSplitting = async (response: string, client: AzureOpenAI) =>
                 parts: [first.trim(), second.trim(), third.trim()]
             };
         }
-    }
-    // 25% chance for two-way split
-    else if (random < 0.40) {
+    } else if (random < 0.40) {
         console.log('Attempting two-way split');
         const [first, second] = await splitResponseTwoWay(response, client);
         if (second) {
@@ -160,18 +130,16 @@ const handleResponseSplitting = async (response: string, client: AzureOpenAI) =>
         }
     }
 
-    // Default to single response
     return {
         splitResponse: false,
         parts: [response]
     };
 };
 
-// Modify the getAstrologicalReading function to potentially split responses
-export async function getAstrologicalReading(
-    prompt: string,
-    previousMessages: GPTMessage[] = [],
-    userId: string
+async function getAstrologicalReading(
+    prompt,
+    previousMessages = [],
+    userId
 ) {
     try {
         // If this is the first message or we don't have cached data, fetch the data
@@ -186,7 +154,7 @@ export async function getAstrologicalReading(
                 }
 
                 const userData = userDoc.data();
-                const birthDetails: BirthDetails = {
+                const birthDetails = {
                     date: userData.birthDate,
                     time: userData.birthTime,
                     location: userData.birthPlace
@@ -207,7 +175,7 @@ export async function getAstrologicalReading(
                 cachedCurrentDasha = currentDasha;
 
                 // console.log('Astrological data fetched and cached');
-            } catch (firestoreError: any) {
+            } catch (firestoreError) {
                 console.error('Firestore Error Details:', {
                     code: firestoreError.code,
                     message: firestoreError.message,
@@ -230,7 +198,7 @@ export async function getAstrologicalReading(
             endpoint: process.env.AZURE_OPENAI_ENDPOINT,
         });
 
-        const messages: GPTMessage[] = [
+        const messages = [
             { 
                 role: "system",
                 content: `
@@ -241,7 +209,7 @@ export async function getAstrologicalReading(
             }
         ]; 
 
-        let responseMessage: any;
+        let responseMessage;
         const maxRetries = 3; // Add safety limit to prevent infinite loops
         let retryCount = 0;
 
@@ -250,7 +218,7 @@ export async function getAstrologicalReading(
                 if (retryCount === 0) {
                     // First attempt with full message
                     const userMessage = {
-                        role: "user" as const,
+                        role: "user",
                         content: `
                             User Question to be answered: ${prompt}. Details you may use when relevant to the question: 
                             {
@@ -272,23 +240,23 @@ export async function getAstrologicalReading(
                     // Subsequent attempts with simplified message
                     console.log("retryCount", retryCount);
                     const simplifiedUserMessage = {
-                        role: "user" as const,
+                        role: "user",
                         content: "?"
                     };
                     messages.push(simplifiedUserMessage);
                 }
 
                 const completion = await client.chat.completions.create({
-                    messages: messages as any[],
+                    messages,
                     model: "gpt-4o",
-                    tools: tools,
+                    tools,
                     tool_choice: "auto"
                 });
 
                 responseMessage = completion.choices[0].message;
                 break; // Success! Exit the loop
 
-            } catch (error: any) {
+            } catch (error) {
                 if (error.code === 'content_filter' && retryCount < maxRetries) {
                     retryCount++;
                     continue; // Try again with simplified message
@@ -305,12 +273,12 @@ export async function getAstrologicalReading(
                 timestamp: new Date().toISOString()
             });
             const toolCall = responseMessage.tool_calls[0];
-            const functionName = toolCall.function.name as keyof AvailableFunctions;
+            const functionName = toolCall.function.name;
             
             let functionResult;
             if (functionName === 'getDailyNakshatraReport') {
                 console.log('Calling getDailyNakshatraReport');
-                const birthDetails: BirthDetails = {
+                const birthDetails = {
                     date: cachedUserData.birthDate,
                     time: cachedUserData.birthTime,
                     location: cachedUserData.birthPlace
@@ -320,7 +288,7 @@ export async function getAstrologicalReading(
             }
             
             // Convert OpenAI message to GPTMessage format
-            const assistantMessage: GPTMessage = {
+            const assistantMessage = {
                 role: 'assistant',
                 content: responseMessage.content || '',
                 tool_calls: responseMessage.tool_calls
@@ -340,7 +308,7 @@ export async function getAstrologicalReading(
 
             // Make a second API call to get the final response
             const secondResponse = await client.chat.completions.create({
-                messages: messages as any[],
+                messages,
                 model: "gpt-4o",
             });
 
@@ -352,7 +320,7 @@ export async function getAstrologicalReading(
         const finalResponse = cleanResponse(responseMessage.content || '');
         return await handleResponseSplitting(finalResponse, client);
 
-    } catch (error: any) {
+    } catch (error) {
         // const { user } = useAuth();
         
         console.error('GPT Service Error:', {
@@ -366,3 +334,8 @@ export async function getAstrologicalReading(
         throw error;
     }
 }
+
+
+module.exports = {
+    getAstrologicalReading
+};

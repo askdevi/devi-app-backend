@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       message: 'Profile updated successfully',
-      userId
+      status: 200
     });
   } catch (error: any) {
     console.error('Update Profile API error:', error);

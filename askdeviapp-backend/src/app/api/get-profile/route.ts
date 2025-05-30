@@ -21,14 +21,24 @@ export async function GET(request: Request) {
 
     const userData = docSnap.data();
 
+    if (!userData) {
+      return NextResponse.json({ error: 'User data not found' }, { status: 404 });
+    }
+
     // Exclude sensitive or unwanted fields
-    const {
-      birthChart,
-      tokens,
-      createdAt,
-      updatedAt,
-      ...filteredUserData
-    } = userData || {};
+    const filteredUserData = {
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      birthDate: userData.birthDate,
+      birthTime: userData.birthTime,
+      gender: userData.gender,
+      preferredLanguage: userData.preferredLanguage,
+      relationshipStatus: userData.relationshipStatus,
+      occupation: userData.occupation,
+      birthPlace: userData.birthPlace,
+      tokens: userData?.tokens || 0,
+      timeEnd: userData?.timeEnd ? userData.timeEnd.toDate() : new Date()
+    };
 
     return NextResponse.json({
       message: 'Profile fetched successfully',
