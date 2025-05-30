@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
                 const data = doc.data();
                 return {
                     createdAt: data.createdAt,
-                    lastUpdated: data.updatedAt,
+                    lastUpdated: data.lastUpdated,
                     chatStartTime: data.chatStartTime,
                     messages: data.messages || []
                 };
