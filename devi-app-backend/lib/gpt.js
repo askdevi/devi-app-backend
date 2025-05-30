@@ -4,7 +4,7 @@ const { getCurrentDasha } = require("./astrology/currentDasha");
 const { systemPrompt, humanizePrompt, splitMessagePrompt, splitThreeWayPrompt, prompt3 } = require("./prompts");
 const { getDailyNakshatraReport } = require('./astrology/dailyNakshatraReport');
 const { getMatchCharacteristics } = require('./astrology/matchCharacteristics');
-const { db } = require('./firebase-admin');
+const { getFirebaseAdmin } = require('./firebase-admin');
 
 // Global cache variables
 let cachedBirthChart = null;
@@ -110,7 +110,7 @@ const handleResponseSplitting = async (response, client) => {
     }
 
     if (random < 0.15) {
-        console.log('Attempting three-way split');
+        // console.log('Attempting three-way split');
         const [first, second, third] = await splitResponseThreeWay(response, client);
         if (second && third) {
             return {
@@ -119,7 +119,7 @@ const handleResponseSplitting = async (response, client) => {
             };
         }
     } else if (random < 0.40) {
-        console.log('Attempting two-way split');
+        // console.log('Attempting two-way split');
         const [first, second] = await splitResponseTwoWay(response, client);
         if (second) {
             return {
@@ -146,6 +146,7 @@ async function getAstrologicalReading(
 
             try {
                 // Fetch user data from Firestore
+                const { db } = getFirebaseAdmin();
                 const userDoc = await db.collection('users').doc(userId).get();
 
                 if (!userDoc.exists) {
@@ -239,7 +240,7 @@ async function getAstrologicalReading(
                     messages.push(...limitedPreviousMessages, userMessage);
                 } else {
                     // Subsequent attempts with simplified message
-                    console.log("retryCount", retryCount);
+                    // console.log("retryCount", retryCount);
                     const simplifiedUserMessage = {
                         role: "user",
                         content: "?"
@@ -268,24 +269,24 @@ async function getAstrologicalReading(
         }
 
         if (responseMessage.tool_calls) {
-            console.log('Tool call detected:', {
-                functionName: responseMessage.tool_calls[0].function.name,
-                arguments: responseMessage.tool_calls[0].function.arguments,
-                timestamp: new Date().toISOString()
-            });
+            // console.log('Tool call detected:', {
+            //     functionName: responseMessage.tool_calls[0].function.name,
+            //     arguments: responseMessage.tool_calls[0].function.arguments,
+            //     timestamp: new Date().toISOString()
+            // });
             const toolCall = responseMessage.tool_calls[0];
             const functionName = toolCall.function.name;
 
             let functionResult;
             if (functionName === 'getDailyNakshatraReport') {
-                console.log('Calling getDailyNakshatraReport');
+                // console.log('Calling getDailyNakshatraReport');
                 const birthDetails = {
                     date: cachedUserData.birthDate,
                     time: cachedUserData.birthTime,
                     location: cachedUserData.birthPlace
                 };
                 functionResult = await availableFunctions[functionName](birthDetails);
-                console.log('getDailyNakshatraReport result:', functionResult)
+                // console.log('getDailyNakshatraReport result:', functionResult)
             }
 
             // Convert OpenAI message to GPTMessage format

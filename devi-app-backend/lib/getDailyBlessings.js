@@ -1,4 +1,4 @@
-const { db } = require('./firebase-admin');
+const { getFirebaseAdmin } = require('./firebase-admin');
 
 // In-memory cache to avoid repeated Firebase calls
 const dailyBlessingsCache = new Map();
@@ -149,11 +149,12 @@ function generateRandomTimeWindow() {
 
 async function getDailyBlessings(userId) {
     try {
+        const { db } = getFirebaseAdmin();
         const todayIST = getTodayDateIST();
         const cacheKey = `${userId}_${todayIST}`;
 
         if (dailyBlessingsCache.has(cacheKey)) {
-            console.log('Using in-memory cache for daily blessings');
+            // console.log('Using in-memory cache for daily blessings');
             return dailyBlessingsCache.get(cacheKey).data;
         }
 
@@ -163,7 +164,7 @@ async function getDailyBlessings(userId) {
 
         if (blessingsDoc.exists) {
             const cachedBlessings = blessingsDoc.data();
-            console.log('Using Firebase cached daily blessings');
+            // console.log('Using Firebase cached daily blessings');
 
             dailyBlessingsCache.set(cacheKey, {
                 data: cachedBlessings,
@@ -173,7 +174,7 @@ async function getDailyBlessings(userId) {
             return cachedBlessings;
         }
 
-        console.log('Generating new daily blessings');
+        // console.log('Generating new daily blessings');
 
         const userDocRef = db.collection('users').doc(userId);
         const userDoc = await userDocRef.get();
@@ -207,7 +208,7 @@ async function getDailyBlessings(userId) {
             timestamp: Date.now()
         });
 
-        console.log('Final daily blessings result:', dailyBlessings);
+        // console.log('Final daily blessings result:', dailyBlessings);
 
         return dailyBlessings;
     } catch (error) {
