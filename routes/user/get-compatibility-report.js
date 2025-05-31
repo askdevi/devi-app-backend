@@ -104,6 +104,10 @@ router.post('/', async (req, res) => {
             total_points: compatibilityReport1.total.total_points,
             received_points: compatibilityReport1.total.received_points,
             report: compatibilityReport1.conclusion.report,
+            name: name,
+            birthDate: birthDate,
+            birthTime: birthTime,
+            birthPlace: birthPlace,
         }
 
         const collectionRef = db.collection('compatibilityReports');
@@ -122,7 +126,8 @@ router.post('/', async (req, res) => {
             await compatibilityReportRef.set({
                 compatibilityReports: [
                     { name, birthDate, birthTime, birthPlace, qualities: compatibilityReport.qualities, total_points: compatibilityReport.total_points, received_points: compatibilityReport.received_points, report: compatibilityReport.report, createdAt: new Date() }
-                ]
+                ],
+                userId: userId
             });
         }
 

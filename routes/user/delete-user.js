@@ -47,6 +47,12 @@ router.delete('/', async (req, res) => {
                     .where('userId', '==', userId)
                     .get();
                 await Promise.all(relationshipsSnapshot.docs.map(r => r.ref.delete()));
+
+                const compatibilityReportsSnapshot = await db
+                    .collection('compatibilityReports')
+                    .where('userId', '==', userId)
+                    .get();
+                await Promise.all(compatibilityReportsSnapshot.docs.map(c => c.ref.delete()));
             });
 
             await Promise.all(deletePromises);
