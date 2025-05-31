@@ -148,7 +148,7 @@ router.post('/', async (req, res) => {
         console.log('✅ Transaction logged successfully');
 
         console.log('🎉 Payment verification process completed successfully');
-        res.json({ success: true, message: 'Payment verified successfully' });
+        res.json({ success: true, message: 'Payment verified successfully', timeEnd: endTime });
     } catch (error) {
         console.error('❌ Error processing payment:', error);
         res.status(500).json({ error: 'Internal Server Error' });
