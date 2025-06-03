@@ -12,7 +12,7 @@ router.get('/', async (req, res) => {
         const { db } = getFirebaseAdmin();
 
         const snapshot = await db
-            .collection('chats')
+            .collection('userChats')
             .where('userId', '==', userId)
             .get();
 
@@ -20,13 +20,12 @@ router.get('/', async (req, res) => {
             .map(doc => {
                 const data = doc.data();
                 return {
-                    createdAt: data.createdAt,
-                    lastUpdated: data.lastUpdated,
-                    chatStartTime: data.chatStartTime,
+                    //remove userId from doc.id
+                    date: doc.id.replace(userId, ''),
                     messages: data.messages || []
                 };
             })
-            .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+            .sort((a, b) => new Date(b.date) - new Date(a.date));
 
         res.json({ chats });
     } catch (error) {

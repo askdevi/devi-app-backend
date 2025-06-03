@@ -7,13 +7,14 @@ router.post('/', async (req, res) => {
     try {
         const {
             userId,
-            name,
+            firstName,
+            lastName,
             birthDate,
             birthTime,
             birthPlace,
         } = req.body;
 
-        if (!userId || !name || !birthDate || !birthTime || !birthPlace || !birthPlace.name || !birthPlace.latitude || !birthPlace.longitude) {
+        if (!userId || !firstName || !lastName || !birthDate || !birthTime || !birthPlace || !birthPlace.name || !birthPlace.latitude || !birthPlace.longitude) {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
@@ -104,7 +105,7 @@ router.post('/', async (req, res) => {
             total_points: compatibilityReport1.total.total_points,
             received_points: compatibilityReport1.total.received_points,
             report: compatibilityReport1.conclusion.report,
-            name: name,
+            name: firstName + ' ' + lastName,
             birthDate: birthDate,
             birthTime: birthTime,
             birthPlace: birthPlace,
@@ -118,14 +119,14 @@ router.post('/', async (req, res) => {
             await compatibilityReportRef.update({
                 compatibilityReports: [
                     ...compatibilityReportDoc.data().compatibilityReports,
-                    { name, birthDate, birthTime, birthPlace, qualities: compatibilityReport.qualities, total_points: compatibilityReport.total_points, received_points: compatibilityReport.received_points, report: compatibilityReport.report, createdAt: new Date() }
+                    { name: firstName + ' ' + lastName, birthDate, birthTime, birthPlace, qualities: compatibilityReport.qualities, total_points: compatibilityReport.total_points, received_points: compatibilityReport.received_points, report: compatibilityReport.report, createdAt: new Date() }
                 ]
             });
         }
         else {
             await compatibilityReportRef.set({
                 compatibilityReports: [
-                    { name, birthDate, birthTime, birthPlace, qualities: compatibilityReport.qualities, total_points: compatibilityReport.total_points, received_points: compatibilityReport.received_points, report: compatibilityReport.report, createdAt: new Date() }
+                    { name: firstName + ' ' + lastName, birthDate, birthTime, birthPlace, qualities: compatibilityReport.qualities, total_points: compatibilityReport.total_points, received_points: compatibilityReport.received_points, report: compatibilityReport.report, createdAt: new Date() }
                 ],
                 userId: userId
             });
