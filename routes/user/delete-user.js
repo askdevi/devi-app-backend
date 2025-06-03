@@ -29,7 +29,7 @@ router.delete('/', async (req, res) => {
 
                 // Delete associated chats
                 const chatsSnapshot = await db
-                    .collection('chats')
+                    .collection('userChats')
                     .where('userId', '==', userId)
                     .get();
                 await Promise.all(chatsSnapshot.docs.map(chatDoc => chatDoc.ref.delete()));
