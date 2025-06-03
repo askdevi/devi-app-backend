@@ -65,7 +65,8 @@ router.post('/', async (req, res) => {
             occupation: occupation || null,
             birthChart: birthChartDetails,
             createdAt: FieldValue.serverTimestamp(),
-            updatedAt: FieldValue.serverTimestamp()
+            updatedAt: FieldValue.serverTimestamp(),
+            startedFreeMinutes: 0
         };
 
         // Write to Firestore
