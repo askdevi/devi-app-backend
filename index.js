@@ -28,9 +28,18 @@ app.use('/api/get-past-compatibility-reports', require('./routes/user/get-past-c
 app.use('/api/devi', require('./routes/devi/devi'));
 app.use('/api/delete-chat', require('./routes/devi/delete-chat'));
 app.use('/api/chat-history', require('./routes/devi/chat-history'));
+app.use('/api/latest-chat-history', require('./routes/devi/latest-chat-history'));
 
 app.use('/api/create-order', require('./routes/payment/create-order'));
 app.use('/api/verify-payment', require('./routes/payment/verify-payment'));
+
+// Catch-all middleware for undefined routes
+app.use((req, res) => {
+  res.status(404).json({
+    error: 'No API Found',
+    message: `The requested endpoint ${req.originalUrl} does not exist`
+  });
+});
 
 app.use(errorHandler);
 
