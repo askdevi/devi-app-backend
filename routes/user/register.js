@@ -36,6 +36,8 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        console.log(birthDate, birthTime, birthPlace);
+
         // Calculate birth chart
         const birthChartDetails = await getBirthChart({
             date: birthDate,
