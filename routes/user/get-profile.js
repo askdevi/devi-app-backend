@@ -37,7 +37,8 @@ router.get('/', async (req, res) => {
             relationshipStatus: userData.relationshipStatus,
             occupation: userData.occupation,
             birthPlace: userData.birthPlace,
-            timeEnd: userData.timeEnd ? userData.timeEnd.toDate() : new Date()
+            timeEnd: userData.timeEnd ? userData.timeEnd.toDate() : new Date(),
+            sign: userData.birthChart.planets[0].sign.toLowerCase() || null,
         };
 
         res.json({
