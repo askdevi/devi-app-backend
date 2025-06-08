@@ -123,6 +123,8 @@ router.post('/', async (req, res) => {
         const compatibilityReportRef = collectionRef.doc(userId);
         const compatibilityReportDoc = await compatibilityReportRef.get();
 
+        const index = compatibilityReportDoc.data().compatibilityReports.length;
+
         if (compatibilityReportDoc.exists) {
             await compatibilityReportRef.update({
                 compatibilityReports: [
@@ -139,6 +141,8 @@ router.post('/', async (req, res) => {
                 userId: userId
             });
         }
+
+        compatibilityReport.index = index;
 
         return res.status(200).json(compatibilityReport);
     }
