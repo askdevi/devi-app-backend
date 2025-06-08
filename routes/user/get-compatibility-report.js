@@ -74,7 +74,7 @@ router.post('/', async (req, res) => {
                     received_points: compatibilityReport1.vashya.received_points,
                 },
                 {
-                    title: 'Birth Start Compatibility',
+                    title: 'Birth Star Compatibility',
                     name: 'Tara',
                     total_points: compatibilityReport1.tara.total_points,
                     received_points: compatibilityReport1.tara.received_points,
