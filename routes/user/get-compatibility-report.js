@@ -62,42 +62,50 @@ router.post('/', async (req, res) => {
         const compatibilityReport = {
             qualities: [
                 {
-                    title: 'Lifestyle Harmony',
+                    title: 'Nature/Class',
+                    name: 'Varna',
                     total_points: compatibilityReport1.varna.total_points,
                     received_points: compatibilityReport1.varna.received_points,
                 },
                 {
-                    title: 'Mutual Attraction',
+                    title: 'Dominance/Attraction',
+                    name: 'Vashya',
                     total_points: compatibilityReport1.vashya.total_points,
                     received_points: compatibilityReport1.vashya.received_points,
                 },
                 {
-                    title: 'Comfort - Prosperity - Health',
+                    title: 'Birth Start Compatibility',
+                    name: 'Tara',
                     total_points: compatibilityReport1.tara.total_points,
                     received_points: compatibilityReport1.tara.received_points,
                 },
                 {
-                    title: 'Intimate Bond',
+                    title: 'Sexual Compatibility',
+                    name: 'Yoni',
                     total_points: compatibilityReport1.yoni.total_points,
                     received_points: compatibilityReport1.yoni.received_points,
                 },
                 {
-                    title: 'Friendship',
+                    title: 'Planetary Friendship',
+                    name: 'Maitri',
                     total_points: compatibilityReport1.maitri.total_points,
                     received_points: compatibilityReport1.maitri.received_points,
                 },
                 {
                     title: 'Temperament',
+                    name: 'Gan',
                     total_points: compatibilityReport1.gan.total_points,
                     received_points: compatibilityReport1.gan.received_points,
                 },
                 {
-                    title: 'Collective Growth',
+                    title: 'Emotional Compatibility',
+                    name: 'Bhakut',
                     total_points: compatibilityReport1.bhakut.total_points,
                     received_points: compatibilityReport1.bhakut.received_points,
                 },
                 {
-                    title: 'Generational Bond',
+                    title: 'Health & Genetic Compatibility',
+                    name: 'Nadi',
                     total_points: compatibilityReport1.nadi.total_points,
                     received_points: compatibilityReport1.nadi.received_points,
                 },
