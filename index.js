@@ -24,6 +24,7 @@ app.use('/api/delete-user', require('./routes/user/delete-user'));
 app.use('/api/daily-blessings', require('./routes/user/daily-blessings'));
 app.use('/api/get-compatibility-report', require('./routes/user/get-compatibility-report'));
 app.use('/api/get-past-compatibility-reports', require('./routes/user/get-past-compatibility-reports'));
+app.use('/api/delete-compatibility-report', require('./routes/user/delete-compatibility-report'));
 
 app.use('/api/devi', require('./routes/devi/devi'));
 app.use('/api/delete-chat', require('./routes/devi/delete-chat'));
