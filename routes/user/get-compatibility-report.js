@@ -18,7 +18,6 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'All fields are required' });
         }
 
-
         const { db } = getFirebaseAdmin();
 
         const userRef = db.collection('users').doc(userId);
@@ -123,9 +122,10 @@ router.post('/', async (req, res) => {
         const compatibilityReportRef = collectionRef.doc(userId);
         const compatibilityReportDoc = await compatibilityReportRef.get();
 
-        const index = compatibilityReportDoc.data().compatibilityReports.length;
+        let index = 0;
 
         if (compatibilityReportDoc.exists) {
+            index = compatibilityReportDoc.data().compatibilityReports.length;
             await compatibilityReportRef.update({
                 compatibilityReports: [
                     ...compatibilityReportDoc.data().compatibilityReports,
