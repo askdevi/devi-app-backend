@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
             method: 'POST',
             url: 'https://control.msg91.com/api/v5/otp',
             params: {
-                template_id: '6819053ad6fc050a676c6672',
+                template_id: '684aacd4d6fc05492b412d73',
                 mobile: phoneNumber,
                 authkey: MSG91_AUTH_KEY || '',
                 otp_expiry: '60' // OTP expires in 60 minutes
