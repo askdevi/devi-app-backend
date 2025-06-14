@@ -34,6 +34,9 @@ app.use('/api/latest-chat-history', require('./routes/devi/latest-chat-history')
 app.use('/api/create-order', require('./routes/payment/create-order'));
 app.use('/api/verify-payment', require('./routes/payment/verify-payment'));
 
+app.use('/api/daily-blessings-notif', require('./routes/notifications/daily-blessings-notif'));
+app.use('/api/update-fcm-token', require('./routes/notifications/update-fcm-token'));
+
 // Catch-all middleware for undefined routes
 app.use((req, res) => {
   res.status(404).json({
