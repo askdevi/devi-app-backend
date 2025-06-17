@@ -33,6 +33,7 @@ app.use('/api/latest-chat-history', require('./routes/devi/latest-chat-history')
 
 app.use('/api/create-order', require('./routes/payment/create-order'));
 app.use('/api/verify-pay', require('./routes/payment/verify-pay'));
+app.use('/api/verify-payment', require('./routes/payment/verify-pay'));
 
 app.use('/api/daily-blessings-notif', require('./routes/notifications/daily-blessings-notif'));
 app.use('/api/update-fcm-token', require('./routes/notifications/update-fcm-token'));
