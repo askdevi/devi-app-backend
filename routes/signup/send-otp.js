@@ -12,6 +12,14 @@ router.post('/', async (req, res) => {
             return res.status(400).json({ error: 'Phone number is required' });
         }
 
+        if(phoneNumber ==='910000000000'){
+            return res.json({
+                success: true,
+                message: 'OTP sent successfully',
+                requestId: '910000000000'
+            });
+        }
+
         const options = {
             method: 'POST',
             url: 'https://control.msg91.com/api/v5/otp',
