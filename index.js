@@ -4,6 +4,10 @@ const requestLogger = require('./middleware/requestLogger');
 const errorHandler = require('./middleware/errorHandler');
 const dotenv = require('dotenv');
 
+const cron = require('node-cron');
+const moment = require('moment-timezone');
+const fetch = require('node-fetch');
+
 dotenv.config();
 
 const app = express();
@@ -13,6 +17,22 @@ app.use(cors());
 app.use(express.json());
 
 app.use(requestLogger);
+
+cron.schedule('30 9 * * *', async () => {
+  const now = moment().tz('Asia/Kolkata');
+  console.log(`💡 Running daily job at (IST): ${now.format()}`);
+
+  try {
+    const resp = await fetch(`https://devi-app.onrender.com/api/daily-blessings-notif`, {
+      method: 'POST',
+    });
+    console.log('Job response:', await resp.text());
+  } catch (err) {
+    console.error('Error in daily job:', err);
+  }
+}, {
+  timezone: 'Asia/Kolkata',
+});
 
 app.use('/api/send-otp', require('./routes/signup/send-otp'));
 app.use('/api/verify-otp', require('./routes/signup/verify-otp'));
