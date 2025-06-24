@@ -144,6 +144,7 @@ router.post('/', async (req, res) => {
             amountPaid,
             timeDuration: timeDuration || null,
             timestamp: new Date(),
+            origin: 'app',
         });
         console.log('✅ Transaction logged successfully');
 
