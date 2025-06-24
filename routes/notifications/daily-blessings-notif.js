@@ -1,6 +1,4 @@
-// src/routes/notifications.js
 const express = require('express');
-const moment = require('moment-timezone');
 const messages_english = require('../../data/daily_blessings_english');
 const messages_hindi = require('../../data/daily_blessings_hindi');
 const { getUsersWithTokens } = require('../../lib/userService');
@@ -10,10 +8,6 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
   try {
-    // 1. Pick today's blessing
-    const today = moment().tz('Asia/Kolkata').date();
-
-    // 2. Fetch users + tokens
     const users = await getUsersWithTokens();
     if (!users.length) {
       return res.status(200).json({ message: 'No tokens registered.' });
@@ -24,22 +18,22 @@ router.post('/', async (req, res) => {
 
     const messaging = getMessaging();
 
-    // 3. Chunk & send
     for (let i = 0; i < users.length; i += BATCH_SIZE) {
       const chunk = users.slice(i, i + BATCH_SIZE);
 
-      // Build per-recipient payloads & token array
-      const tokens = chunk.map(u => u.token);
-      const messages = chunk.map(u => ({
-        token: u.token,
-        // if u.preferredLanguage is hindi, use messages_hindi, else use messages_english
-        notification: {
-          title: u.preferredLanguage === 'hinglish' ? messages_hindi[today - 1].title.replace('{name}', u.firstName) : messages_english[today - 1].title.replace('{name}', u.firstName),
-          body: u.preferredLanguage === 'hinglish' ? messages_hindi[today - 1].body : messages_english[today - 1].body,
-        },
-        android: { priority: 'high' },
-        apns: { headers: { 'apns-priority': '10' } },
-      }));
+      const messages = [];
+      for (const user of chunk) {
+        const index = Math.floor(Math.random() * messages_english.length);
+        messages.push({
+          token: user.token,
+          notification: {
+            title: user.preferredLanguage === 'hinglish' ? messages_hindi[index].title.replace('{name}', user.firstName) : messages_english[index].title.replace('{name}', user.firstName),
+            body: user.preferredLanguage === 'hinglish' ? messages_hindi[index].body : messages_english[index].body,
+          },
+          android: { priority: 'high' },
+          apns: { headers: { 'apns-priority': '10' } },
+        });
+      }
 
       // Send messages in parallel using Promise.all
       const sendPromises = messages.map(message =>

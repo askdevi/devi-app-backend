@@ -74,6 +74,22 @@ router.post('/', async (req, res) => {
         // Write to Firestore
         await db.doc(`users/${userId}`).set(userData);
 
+        const days = [];
+        const hours = [];
+        while (days.length < 3) {
+            const day = Math.floor(Math.random() * 7);
+            if (!days.includes(day)) {
+                days.push(day);
+                hours.push(Math.floor(Math.random() * 4) + 19);
+            }
+        }
+        days.sort((a, b) => a - b);
+        const schedule = {
+            days: days,
+            hours: hours,
+        };
+        await db.collection('freeChatSchedule').doc(userId).set(schedule);
+
         res.json({ message: 'User registered successfully' });
     } catch (error) {
         console.error('Register API error:', error);
