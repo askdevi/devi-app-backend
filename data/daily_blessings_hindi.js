@@ -1,122 +1,122 @@
 module.exports = [
     {
-        title: "{name}, your daily blessings await",
-        body: "Unlock today's mantra, lucky colour, number, and power moment ✨"
+        title: "{name}, aapki daily blessings taiyaar hain 🌟",
+        body: "Aaj ka mantra, lucky colour, number aur power moment unlock kijiye."
     },
     {
-        title: "Good morning {name} , your cosmic insights are here",
-        body: "Your mantra, colour, number, and key moment are ready"
+        title: "Good morning {name}, aapke cosmic insights aa gaye hain.",
+        body: "Mantra, colour, number aur key moment ready hain. "
     },
     {
-        title: "Rise and shine {name}",
-        body: "Tap in for today's lucky insights and energy shift ✨"
+        title: "Rise and shine {name} ✨",
+        body: "Tap kijiye aur aaj ke lucky insights aur energy shift paaiye."
     },
     {
-        title: "{name}, your daily blessings just arrived",
-        body: "Unlock your lucky mantra, colour, number, and moment."
+        title: "{name}, aapki daily blessings aa gayi hain.",
+        body: "Lucky mantra, colour, number aur moment abhi unlock kijiye."
     },
     {
-        title: "Your divine timing is now, {name} 🕉️✨",
+        title: "Ab hai aapka divine time, {name} 🕉️✨",
         body: "Daily blessings await — discover your signs."
     },
     {
-        title: "A new vibe begins, {name}",
-        body: "Discover what's lucky and aligned today 💫"
+        title: "Nayi vibe start ho gayi hai, {name}.",
+        body: "Dekhiye aaj kya lucky aur aligned hai 💫"
     },
     {
-        title: "{name}, your daily alignment is here",
-        body: "Open the door to today's power insights."
+        title: "{name}, aaj ki alignment aa gayi hai.",
+        body: "Powerful insights ke liye gate kholiye."
     },
     {
-        title: "{name}, your daily blessings are ready ✨",
-        body: "Discover your lucky mantra, colour, number, and moment of the day. Tap in and align with today's energy 🕉️"
+        title: "{name}, aapki daily blessings taiyaar hain.",
+        body: "Lucky mantra, colour, number aur moment discover kijiye. Energy ke saath align ho jaaiye 🕉️"
     },
     {
-        title: "It's time, {name}",
-        body: "Embrace your colour, number, mantra and moment."
+        title: "Time aa gaya hai, {name}.",
+        body: "Apna colour, number, mantra aur moment embrace kijiye."
     },
     {
-        title: "{name}, the day is tuned to your energy ✨",
-        body: "Receive your blessings now."
+        title: "{name}, aaj ka din aapki energy ke hisaab se tuned hai.",
+        body: "Abhi blessings prapt kijiye."
     },
     {
         title: "Good morning, {name} 🌞",
-        body: "Let today's colour, number, and mantra guide you 🕉️"
+        body: "Aaj ka colour, number aur mantra aapko guide karega 🕉️"
     },
     {
-        title: "{name}, the cosmos has something just for you.",
-        body: "Find your mantra, moment, and flow state."
+        title: "{name}, cosmos ne aapke liye kuch khaas bheja hai.",
+        body: "Apna mantra, moment aur flow state dhoondhiye."
     },
     {
-        title: "Your daily blessings are ready 🎁",
-        body: "Unlock your mantra, colour, number, and moment of power."
+        title: "Aapki daily blessings ready hain 🎁",
+        body: "Mantra, colour, number aur moment of power unlock kijiye."
     },
     {
-        title: "Start the day with clarity and magic.",
-        body: "Your daily blessings await 💫"
+        title: "Clarity aur magic ke saath din ki shuruaat kijiye.",
+        body: "Aaj ki blessings aapka intezaar kar rahi hain 💫"
     },
     {
-        title: "Today's energy is aligned just for you",
-        body: "Tap in and discover your daily blessings 🧿"
+        title: "Aaj ki energy sirf aapke liye aligned hai.",
+        body: "Tap karke apni daily blessings prapt kijiye 🧿"
     },
     {
-        title: "Ready for today's divine nudge?",
-        body: "Your blessings are waiting."
+        title: "Tayyar hain aaj ke divine signal ke liye?",
+        body: "Aapki blessings aapka intezaar kar rahi hain."
     },
     {
-        title: "A new day, a new frequency",
-        body: "Your daily blessings are now live."
+        title: "Naya din, nayi frequency.",
+        body: "Aaj ki daily blessings ab live hain."
     },
     {
-        title: "Let today's guidance light the way 🪔",
-        body: "Your lucky signs are here."
+        title: "Aaj ki guidance aapka raasta roshan kare 🪔",
+        body: "Aapke lucky signs yahin hain."
     },
     {
         title: "Mantra. Colour. Number. Moment.",
-        body: "Your daily guidance is in motion."
+        body: "Aaj ki guidance chal padhi hai."
     },
     {
-        title: "Devi has prepared your daily blessings",
-        body: "Your mantra, lucky colour, number, and moment await."
+        title: "Devi ne aapki daily blessings taiyaar ki hain.",
+        body: "Mantra, lucky colour, number aur moment aapka intezaar kar rahe hain."
     },
     {
-        title: "Your day starts with Devi's guidance.",
-        body: "Unlock your blessings and flow into alignment."
+        title: "Aapka din Devi ke guidance ke saath shuru hota hai.",
+        body: "Blessings unlock kijiye aur alignment mein aa jaaiye."
     },
     {
-        title: "Daily blessings, chosen by Devi, are ready for you",
-        body: "Tap in and discover what today holds 🌞"
+        title: "Aaj ki blessings, Devi ne aapke liye chuni hain.",
+        body: "Tap karke dekhiye aaj kya laayi hai 🌞"
     },
     {
-        title: "Devi whispers: today's energy is made for you.",
-        body: "Your mantra, colour, and power moment are live."
+        title: "Devi kehti hain: aaj ki energy aapke liye hi bani hai. ",
+        body: "Mantra, colour aur power moment ab live hain. "
     },
     {
-        title: "Start your day with Devi's light.",
-        body: "Your blessings and lucky signs are waiting 🪔"
+        title: "Din ki shuruaat Devi ke roshni ke saath kijiye 🪔",
+        body: "Aapki blessings aur lucky signs taiyaar hain."
     },
     {
-        title: "Devi's message for you has arrived 💖",
-        body: "Discover your daily mantra and magical moments 🔮🪔"
+        title: "Devi ka message aapke liye aa gaya 💖",
+        body: "Aaj ka mantra aur magical moments discover kijiye 🔮🪔"
     },
     {
-        title: "Devi has something special for you today, {name}.",
-        body: "Tap in to receive your guidance and glow."
+        title: "Aaj Devi ne aapke liye kuch khaas bheja hai, {name}.",
+        body: "Tap karke apni guidance prapt kijiye aur glow kijiye."
     },
     {
-        title: "Devi is calling, {name}.",
-        body: "Your lucky signs and power moments are waiting 💖✨"
+        title: "Devi bula rahi hain, {name}.",
+        body: "Aapke lucky signs aur power moments taiyaar hain 💖✨"
     },
     {
-        title: "{name}, your day starts with Devi's blessing",
-        body: "Unlock your personal signs and step forward."
+        title: "{name}, aapka din Devi ki blessing ke saath shuru hota hai.",
+        body: "Apne personal signs unlock kijiye aur aage badhiye."
     },
     {
-        title: "Step into today with clarity.",
-        body: "Your blessings and insights await."
+        title: "Aaj ke din mein clarity ke saath kadam rakhiye.",
+        body: "Aapki blessings aur insights taiyaar hain."
     },
     {
-        title: "Your soul knows the way 🪔",
-        body: "Tune into your daily blessings now."
+        title: "Aapki soul raasta jaanti hai 🪔",
+        body: "Aaj ki daily blessings ke saath tune in kijiye. "
     }
 ]
