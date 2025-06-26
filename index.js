@@ -94,6 +94,7 @@ app.use('/api/update-fcm-token', require('./routes/notifications/update-fcm-toke
 app.use('/api/daily-blessings-notif', require('./routes/notifications/daily-blessings-notif'));
 app.use('/api/free-chat-notif', require('./routes/notifications/free-chat-notif'));
 app.use('/api/reset-free-chat-schedule', require('./routes/notifications/reset-free-chat-schedule'));
+app.use('/api/send-notif', require('./routes/notifications/send-notif'));
 
 // Routes for scripts
 app.use('/api/give-free-chat', require('./routes/scripts/give-free-chat'));
