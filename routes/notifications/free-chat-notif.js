@@ -53,6 +53,8 @@ router.post('/', async (req, res) => {
             failureCount += batchFailureCount;
         }
 
+        console.log("Success count:", successCount, "Failure count:", failureCount);
+
         return res.json({ successCount, failureCount });
     } catch (err) {
         console.error('Error in free_chat_notif:', err);
